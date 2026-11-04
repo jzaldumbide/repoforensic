@@ -44,9 +44,18 @@
         <button type="button" class="tab-btn" data-view="ai">
           🤖 Uso de IA
         </button>
+        <button type="button" class="tab-btn" data-view="penalty">
+          ⚖️ % Amonestación (Sugerido)
+        </button>
       </nav>
 
       <div class="header-controls">
+        <a href="https://github.com/jzaldumbide/repoforensic/archive/refs/heads/main.zip" class="btn-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.35rem;" title="Descargar código fuente de RepoForensics (.zip)">
+          ⬇ Descargar App
+        </a>
+        <a href="https://github.com/jzaldumbide/repoforensic/fork" target="_blank" rel="noopener" class="btn-secondary" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.35rem;" title="Hacer Fork de este proyecto en GitHub">
+          🍴 Fork me on GitHub
+        </a>
         <button type="button" id="btnAddRepos" class="btn-secondary" title="Analizar o editar lista de repositorios">
           + Repositorios
         </button>
@@ -172,6 +181,18 @@
           </p>
           <div id="aiSummaryCards" class="report-grid" style="margin-block-end: 1.25rem;"></div>
           <div class="matrix-scroll" id="aiTableContainer"></div>
+        </div>
+      </section>
+
+      <!-- VISTA 6: RECOMENDACIÓN DE AMONESTACIÓN (%) -->
+      <section class="full-panel view-section" id="view-penalty" aria-label="Recomendación orientativa de amonestación">
+        <div class="panel-inner">
+          <h2>⚖️ % Recomendado de Amonestación (Solo Recomendación Orientativa)</h2>
+          <p class="section-desc">
+            <strong>Nota Importante:</strong> Este indicador es <em>exclusivamente una sugerencia orientativa</em> para apoyar el criterio del docente. Combina dos factores verificables: <strong>(1) el porcentaje de copia/derivación respecto a un autor cronológicamente anterior</strong> y <strong>(2) el arrastre del PDF completo del enunciado</strong> (ya sea por subir el archivo <code>.pdf</code> al repositorio o por volcar los literales de la rúbrica <code>// R1..R10</code> del PDF directamente al prompt sin desarrollo progresivo).
+          </p>
+          <div id="penaltySummaryCards" class="report-grid" style="margin-block-end: 1.25rem;"></div>
+          <div class="matrix-scroll" id="penaltyTableContainer"></div>
         </div>
       </section>
 

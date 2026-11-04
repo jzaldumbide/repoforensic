@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T21:37:25.426619",
+  "generated_at": "2026-11-03T21:54:34.453451",
   "nodes": [
     {
       "id": "JustinPaladines/Prueba_Urban-Inspect",
@@ -36,7 +36,10 @@
         "banner_comments": 0,
         "code_emojis": 1,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793154940,
       "first_commit_date": "2026-10-27T21:35:40",
@@ -149,6 +152,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": "josselynreyes-ux/Prueba1_DesarrolloMovil",
+      "copied_similarity": 35.1,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -188,7 +200,10 @@
         "banner_comments": 10,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 3
+        "conventional_commits": 3,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793130148,
       "first_commit_date": "2026-10-27T14:42:28",
@@ -317,6 +332,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 35,
+      "plagiarism_penalty": 35,
+      "pdf_penalty": 0,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": "Emialejandra/Urban-Inspect",
+      "copied_similarity": 52.2,
+      "penalty_reasons": [
+        "Derivación estructural significativa (52.2%) respecto a autor anterior (Emialejandra/Urban-Inspect)."
       ]
     },
     {
@@ -357,7 +381,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1793168750,
       "first_commit_date": "2026-10-28T01:25:50",
@@ -496,6 +523,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 15,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 15,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": "alexbarba2753/PRUEBA-PRACTICA-1-MOVILES",
+      "copied_similarity": 35.4,
+      "penalty_reasons": [
+        "Volcado directo de los literales del PDF del examen en el prompt (12 etiquetas // R1..R10 inyectadas en el código)."
       ]
     },
     {
@@ -535,7 +571,10 @@
         "banner_comments": 0,
         "code_emojis": 8,
         "has_ascii_tree": true,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793158729,
       "first_commit_date": "2026-10-27T22:38:49",
@@ -685,6 +724,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 75,
+      "plagiarism_penalty": 75,
+      "pdf_penalty": 0,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "jossuer1/Examen-Aplicaciones-Moviles",
+      "copied_similarity": 70.7,
+      "penalty_reasons": [
+        "Copia / derivación muy alta (70.7%) de autor anterior (jossuer1/Examen-Aplicaciones-Moviles, 3.0h antes, 5 archivos lógicos coincidentes)."
       ]
     },
     {
@@ -724,7 +772,10 @@
         "banner_comments": 0,
         "code_emojis": 1,
         "has_ascii_tree": false,
-        "conventional_commits": 1
+        "conventional_commits": 1,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793154421,
       "first_commit_date": "2026-10-27T21:27:01",
@@ -834,6 +885,17 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 50,
+      "plagiarism_penalty": 35,
+      "pdf_penalty": 15,
+      "penalty_category": "Amonestación Media Sugerida (40% - 69%)",
+      "copied_from": "alexbarba2753/PRUEBA-PRACTICA-1-MOVILES",
+      "copied_similarity": 54.2,
+      "penalty_reasons": [
+        "Derivación estructural significativa (54.2%) respecto a autor anterior (alexbarba2753/PRUEBA-PRACTICA-1-MOVILES).",
+        "Inclusión literal de códigos de rúbrica del PDF en el prompt (4 referencias // R1..R10).",
+        "Entrega subida de golpe sin historial de desarrollo progresivo (2 commit(s) para 2510 líneas)."
       ]
     },
     {
@@ -860,12 +922,13 @@
         "alex.barba@epn.edu.ec"
       ],
       "ai_assisted": false,
-      "ai_score": 32,
-      "ai_level": "Moderado / Parcial",
+      "ai_score": 50,
+      "ai_level": "Probable (Huellas de Prompt)",
       "ai_models": [
         "Asistencia Moderada (ChatGPT / Claude / Gemini)"
       ],
       "ai_evidences": [
+        "Arrastró el archivo PDF del enunciado directamente dentro del repositorio (`Prueba_I_Practica_UrbanInspect_Ionic.pdf`).",
         "20 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
         "15 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
       ],
@@ -875,7 +938,12 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 15
+        "conventional_commits": 15,
+        "pdf_files": [
+          "Prueba_I_Practica_UrbanInspect_Ionic.pdf"
+        ],
+        "pdf_in_repo": true,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1793151947,
       "first_commit_date": "2026-10-27T20:45:47",
@@ -1099,6 +1167,16 @@
         "src/theme/variables.scss",
         "tsconfig.app.json",
         "tsconfig.json"
+      ],
+      "penalty_score": 30,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 30,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Arrastró el archivo PDF completo del enunciado al repositorio/Git (Prueba_I_Practica_UrbanInspect_Ionic.pdf).",
+        "Volcado directo de los literales del PDF del examen en el prompt (20 etiquetas // R1..R10 inyectadas en el código)."
       ]
     },
     {
@@ -1135,7 +1213,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793201242,
       "first_commit_date": "2026-10-28T10:27:22",
@@ -1363,6 +1444,15 @@
         "municipio/tsconfig.spec.json",
         "municipio/vitest.config.mts",
         "package.json"
+      ],
+      "penalty_score": 75,
+      "plagiarism_penalty": 75,
+      "pdf_penalty": 0,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "Aribeth14/Examen1_AplicacionesMoviles_UrbanInspect",
+      "copied_similarity": 71.2,
+      "penalty_reasons": [
+        "Copia / derivación muy alta (71.2%) de autor anterior (Aribeth14/Examen1_AplicacionesMoviles_UrbanInspect, 5.3h antes, 5 archivos lógicos coincidentes)."
       ]
     },
     {
@@ -1401,7 +1491,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1793218173,
       "first_commit_date": "2026-10-28T15:09:33",
@@ -1475,6 +1568,16 @@
         "urbaninspect/src/app/services/storage.service.ts",
         "urbaninspect/src/app/services/weather.service.ts",
         "urbaninspect/src/environments/environment.ts"
+      ],
+      "penalty_score": 50,
+      "plagiarism_penalty": 35,
+      "pdf_penalty": 15,
+      "penalty_category": "Amonestación Media Sugerida (40% - 69%)",
+      "copied_from": "NW08/Apps_GR1/src/Clase_08",
+      "copied_similarity": 48.3,
+      "penalty_reasons": [
+        "Derivación estructural significativa (48.3%) respecto a autor anterior (NW08/Apps_GR1/src/Clase_08).",
+        "Volcado directo de los literales del PDF del examen en el prompt (22 etiquetas // R1..R10 inyectadas en el código)."
       ]
     },
     {
@@ -1508,6 +1611,7 @@
       ],
       "ai_evidences": [
         "Rastros en historial Git de agentes `.opencode/agents/` (`deepseek-codigo.md`, `HANDOFF.md`, `PLAN.md`).",
+        "Subió el PDF del enunciado al repositorio y luego lo borró en un commit posterior (`Actividad_Ionic_APIs_Infinite_Scroll.pdf`).",
         "Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: 46 bloques), típico de generación por LLM (Claude / GPT-4o).",
         "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA.",
         "11 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
@@ -1518,7 +1622,12 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": true,
-        "conventional_commits": 11
+        "conventional_commits": 11,
+        "pdf_files": [
+          "Actividad_Ionic_APIs_Infinite_Scroll.pdf"
+        ],
+        "pdf_in_repo": true,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1792700160,
       "first_commit_date": "2026-10-22T15:16:00",
@@ -1744,6 +1853,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 15,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 15,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Arrastró el archivo PDF completo del enunciado al repositorio/Git (Actividad_Ionic_APIs_Infinite_Scroll.pdf)."
       ]
     },
     {
@@ -1785,7 +1903,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": true,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793217673,
       "first_commit_date": "2026-10-28T15:01:13",
@@ -1855,6 +1976,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -1894,7 +2024,10 @@
         "banner_comments": 0,
         "code_emojis": 2,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1793227656,
       "first_commit_date": "2026-10-28T17:47:36",
@@ -2009,6 +2142,18 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 75,
+      "plagiarism_penalty": 55,
+      "pdf_penalty": 20,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "Jossue-Chulde/quito-alerta",
+      "copied_similarity": 62.3,
+      "penalty_reasons": [
+        "Copia / derivación alta (62.3%) de autor anterior (Jossue-Chulde/quito-alerta, 39.5h antes).",
+        "Nota: Doble repositorio del mismo estudiante (evolución de DannyPoli06/PruebadeMoviles-N1).",
+        "Volcado directo de los literales del PDF del examen en el prompt (16 etiquetas // R1..R10 inyectadas en el código).",
+        "Entrega subida de golpe sin historial de desarrollo progresivo (2 commit(s) para 3055 líneas)."
       ]
     },
     {
@@ -2048,7 +2193,10 @@
         "banner_comments": 0,
         "code_emojis": 17,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793216749,
       "first_commit_date": "2026-10-28T14:45:49",
@@ -2185,6 +2333,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 35,
+      "plagiarism_penalty": 35,
+      "pdf_penalty": 0,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": "NW08/Apps_GR1/src/Clase_08",
+      "copied_similarity": 49.5,
+      "penalty_reasons": [
+        "Derivación estructural significativa (49.5%) respecto a autor anterior (NW08/Apps_GR1/src/Clase_08)."
       ]
     },
     {
@@ -2225,7 +2382,10 @@
         "banner_comments": 0,
         "code_emojis": 1,
         "has_ascii_tree": true,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793244686,
       "first_commit_date": "2026-10-28T22:31:26",
@@ -2376,6 +2536,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Nota: Doble repositorio del mismo estudiante (evolución de gabrielt007/Urbaninspect-)."
       ]
     },
     {
@@ -2423,7 +2592,10 @@
         "banner_comments": 5,
         "code_emojis": 0,
         "has_ascii_tree": true,
-        "conventional_commits": 1
+        "conventional_commits": 1,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": true
       },
       "first_commit_ts": 1793288808,
       "first_commit_date": "2026-10-29T10:46:48",
@@ -2546,6 +2718,17 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 90,
+      "plagiarism_penalty": 75,
+      "pdf_penalty": 15,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "Dilanbkr7/UrbanInspect",
+      "copied_similarity": 73.7,
+      "penalty_reasons": [
+        "Copia / derivación muy alta (73.7%) de autor anterior (Dilanbkr7/UrbanInspect, 20.0h antes, 5 archivos lógicos coincidentes).",
+        "Nota: Doble repositorio del mismo estudiante (evolución de chico20200/bestiario_DnD).",
+        "Volcado directo de los literales del PDF del examen en el prompt (11 etiquetas // R1..R10 inyectadas en el código)."
       ]
     },
     {
@@ -2584,7 +2767,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 8
+        "conventional_commits": 8,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793242298,
       "first_commit_date": "2026-10-28T21:51:38",
@@ -2786,6 +2972,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 15,
+      "plagiarism_penalty": 15,
+      "pdf_penalty": 0,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": "NW08/Apps_GR1/src/Clase_08",
+      "copied_similarity": 42.8,
+      "penalty_reasons": [
+        "Similitud moderada (42.8%) con repositorio previo (NW08/Apps_GR1/src/Clase_08)."
       ]
     },
     {
@@ -2823,7 +3018,10 @@
         "banner_comments": 0,
         "code_emojis": 1,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793071629,
       "first_commit_date": "2026-10-26T22:27:09",
@@ -3043,6 +3241,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -3082,7 +3289,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": true,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793085441,
       "first_commit_date": "2026-10-27T02:17:21",
@@ -3334,6 +3544,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -3372,7 +3591,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793148067,
       "first_commit_date": "2026-10-27T19:41:07",
@@ -3488,6 +3710,16 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 20,
+      "plagiarism_penalty": 15,
+      "pdf_penalty": 5,
+      "penalty_category": "Amonestación Leve / Observación (15% - 39%)",
+      "copied_from": "Jossue-Chulde/quito-alerta",
+      "copied_similarity": 38.0,
+      "penalty_reasons": [
+        "Similitud moderada (38.0%) con repositorio previo (Jossue-Chulde/quito-alerta).",
+        "Entrega subida de golpe sin historial de desarrollo progresivo (2 commit(s) para 2593 líneas)."
       ]
     },
     {
@@ -3527,7 +3759,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 16
+        "conventional_commits": 16,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793122695,
       "first_commit_date": "2026-10-27T12:38:15",
@@ -3762,6 +3997,15 @@
         "tsconfig.app.json",
         "tsconfig.json",
         "tsconfig.spec.json"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -3801,7 +4045,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793151003,
       "first_commit_date": "2026-10-27T20:30:03",
@@ -3896,6 +4143,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 0,
+      "plagiarism_penalty": 0,
+      "pdf_penalty": 0,
+      "penalty_category": "Sin Amonestación (0% - 14%)",
+      "copied_from": null,
+      "copied_similarity": 0.0,
+      "penalty_reasons": [
+        "Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado."
       ]
     },
     {
@@ -3938,7 +4194,10 @@
         "banner_comments": 0,
         "code_emojis": 0,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793208253,
       "first_commit_date": "2026-10-28T12:24:13",
@@ -4035,6 +4294,17 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 70,
+      "plagiarism_penalty": 55,
+      "pdf_penalty": 15,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "NW08/Apps_GR1/src/Clase_08",
+      "copied_similarity": 67.2,
+      "penalty_reasons": [
+        "Copia / derivación alta (67.2%) de autor anterior (NW08/Apps_GR1/src/Clase_08, 1.9h antes).",
+        "Inclusión literal de códigos de rúbrica del PDF en el prompt (4 referencias // R1..R10).",
+        "Entrega subida de golpe sin historial de desarrollo progresivo (2 commit(s) para 2917 líneas)."
       ]
     },
     {
@@ -4073,7 +4343,10 @@
         "banner_comments": 0,
         "code_emojis": 2,
         "has_ascii_tree": false,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793249057,
       "first_commit_date": "2026-10-28T23:44:17",
@@ -4233,6 +4506,15 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 55,
+      "plagiarism_penalty": 55,
+      "pdf_penalty": 0,
+      "penalty_category": "Amonestación Media Sugerida (40% - 69%)",
+      "copied_from": "DannyPoli06/prueba-bien-hecha",
+      "copied_similarity": 63.1,
+      "penalty_reasons": [
+        "Copia / derivación alta (63.1%) de autor anterior (DannyPoli06/prueba-bien-hecha, 5.9h antes)."
       ]
     },
     {
@@ -4274,7 +4556,10 @@
         "banner_comments": 4,
         "code_emojis": 0,
         "has_ascii_tree": true,
-        "conventional_commits": 0
+        "conventional_commits": 0,
+        "pdf_files": [],
+        "pdf_in_repo": false,
+        "pdf_prompt_dump": false
       },
       "first_commit_ts": 1793182341,
       "first_commit_date": "2026-10-28T05:12:21",
@@ -4376,6 +4661,16 @@
         "tsconfig.json",
         "tsconfig.spec.json",
         "vitest.config.mts"
+      ],
+      "penalty_score": 85,
+      "plagiarism_penalty": 75,
+      "pdf_penalty": 10,
+      "penalty_category": "Sanción Severa Sugerida (70% - 100%)",
+      "copied_from": "jossuer1/Examen-Aplicaciones-Moviles",
+      "copied_similarity": 79.5,
+      "penalty_reasons": [
+        "Copia / derivación muy alta (79.5%) de autor anterior (jossuer1/Examen-Aplicaciones-Moviles, 9.5h antes, 4 archivos lógicos coincidentes).",
+        "Inclusión literal de códigos de rúbrica del PDF en el prompt (4 referencias // R1..R10)."
       ]
     }
   ],

@@ -383,6 +383,17 @@ def analyze_ai_usage(info: dict, git_meta: dict, feats: dict) -> dict:
         if fobj.get("ext") in {".ts", ".html"}:
             code_emojis += len(re.findall(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", raw))
 
+    # Check for PDF files in current tree or git history (arrastraron el PDF del enunciado)
+    pdf_files_current = [f for f in feats.get("file_tree", []) if f.lower().endswith(".pdf")]
+    pdf_files_git = sorted(list(set(re.findall(r"[^\s|]+\.pdf", full_log, re.I))))
+    all_pdfs = sorted(list(set(pdf_files_current + pdf_files_git)))
+
+    if all_pdfs:
+        score += 18
+        if pdf_files_current:
+            evidences.append(f"Arrastró el archivo PDF del enunciado directamente dentro del repositorio (`{', '.join(pdf_files_current)}`).")
+        else:
+            evidences.append(f"Subió el PDF del enunciado al repositorio y luego lo borró en un commit posterior (`{', '.join(pdf_files_git)}`).")
     # Evaluate heuristic signals
     if rubric_refs >= 4:
         score += 22
@@ -453,7 +464,10 @@ def analyze_ai_usage(info: dict, git_meta: dict, feats: dict) -> dict:
             "banner_comments": banner_comments,
             "code_emojis": code_emojis,
             "has_ascii_tree": has_ascii_tree,
-            "conventional_commits": conv_commits
+            "conventional_commits": conv_commits,
+            "pdf_files": all_pdfs,
+            "pdf_in_repo": bool(all_pdfs),
+            "pdf_prompt_dump": bool(all_pdfs) or rubric_refs >= 6
         }
     }
 
@@ -743,6 +757,96 @@ def compare_all_repos(repos_dir: Path, raw_urls: list = None):
 
     for e in edges:
         e["is_primary_copy_edge"] = (primary_parent.get(e["target"]) == e["source"])
+
+    # Compute Recommended Penalty / Amonestación Sugerida (solo recomendación orientativa)
+    for node in nodes:
+        nid = node["id"]
+        inc_edges = [e for e in edges if e["target"] == nid and not e.get("same_owner")]
+        inc_same = [e for e in edges if e["target"] == nid and e.get("same_owner")]
+        inc_edges.sort(key=lambda x: (x["similarity"], x["matched_custom_files_count"]), reverse=True)
+
+        best_in = inc_edges[0] if inc_edges else None
+        plag_sim = best_in["similarity"] if best_in else 0.0
+        copied_from = best_in["source"] if best_in else None
+
+        penalty_reasons = []
+        plag_penalty = 0
+
+        if best_in:
+            if plag_sim >= 70:
+                plag_penalty = 75
+                penalty_reasons.append(
+                    f"Copia / derivación muy alta ({plag_sim}%) de autor anterior ({copied_from}, {best_in['diff_hours']}h antes, {best_in['matched_custom_files_count']} archivos lógicos coincidentes)."
+                )
+            elif plag_sim >= 60:
+                plag_penalty = 55
+                penalty_reasons.append(
+                    f"Copia / derivación alta ({plag_sim}%) de autor anterior ({copied_from}, {best_in['diff_hours']}h antes)."
+                )
+            elif plag_sim >= 48:
+                plag_penalty = 35
+                penalty_reasons.append(
+                    f"Derivación estructural significativa ({plag_sim}%) respecto a autor anterior ({copied_from})."
+                )
+            elif plag_sim >= 38:
+                plag_penalty = 15
+                penalty_reasons.append(
+                    f"Similitud moderada ({plag_sim}%) con repositorio previo ({copied_from})."
+                )
+
+        if inc_same:
+            prev_self = inc_same[0]["source"]
+            penalty_reasons.append(f"Nota: Doble repositorio del mismo estudiante (evolución de {prev_self}).")
+
+        # Check PDF drag & drop (archivo .pdf en el repo/git o volcado íntegro de códigos R1..R10 del PDF en el prompt)
+        ai_m = node.get("ai_metrics", {})
+        pdfs = ai_m.get("pdf_files", [])
+        rubric_refs = ai_m.get("rubric_refs", 0)
+        pdf_penalty = 0
+
+        if pdfs:
+            pdf_penalty += 15
+            penalty_reasons.append(
+                f"Arrastró el archivo PDF completo del enunciado al repositorio/Git ({', '.join(pdfs)})."
+            )
+        if rubric_refs >= 10:
+            pdf_penalty += 15
+            penalty_reasons.append(
+                f"Volcado directo de los literales del PDF del examen en el prompt ({rubric_refs} etiquetas // R1..R10 inyectadas en el código)."
+            )
+        elif rubric_refs >= 4:
+            pdf_penalty += 10
+            penalty_reasons.append(
+                f"Inclusión literal de códigos de rúbrica del PDF en el prompt ({rubric_refs} referencias // R1..R10)."
+            )
+
+        if node.get("commit_count", 0) <= 2 and node.get("custom_lines", 0) >= 1200:
+            pdf_penalty += 5
+            penalty_reasons.append(
+                f"Entrega subida de golpe sin historial de desarrollo progresivo ({node['commit_count']} commit(s) para {node['custom_lines']} líneas)."
+            )
+
+        total_penalty = min(100, plag_penalty + pdf_penalty)
+
+        if total_penalty >= 70:
+            pen_cat = "Sanción Severa Sugerida (70% - 100%)"
+        elif total_penalty >= 40:
+            pen_cat = "Amonestación Media Sugerida (40% - 69%)"
+        elif total_penalty >= 15:
+            pen_cat = "Amonestación Leve / Observación (15% - 39%)"
+        else:
+            pen_cat = "Sin Amonestación (0% - 14%)"
+
+        if not penalty_reasons:
+            penalty_reasons.append("Sin evidencia de copia de autores previos ni arrastre del PDF del enunciado.")
+
+        node["penalty_score"] = total_penalty
+        node["plagiarism_penalty"] = plag_penalty
+        node["pdf_penalty"] = pdf_penalty
+        node["penalty_category"] = pen_cat
+        node["copied_from"] = copied_from
+        node["copied_similarity"] = plag_sim
+        node["penalty_reasons"] = penalty_reasons
 
     return {
         "generated_at": datetime.now().isoformat(),

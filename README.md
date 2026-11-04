@@ -1,13 +1,16 @@
 # 🕵️‍♂️ RepoForensics — Análisis Forense de Plagio, Derivación de Código y Uso de IA en GitHub
 
 [![Aplicación en Vivo](https://img.shields.io/badge/🌐_Demo_en_Vivo-repoforensic.onrender.com-2563eb?style=for-the-badge)](https://repoforensic.onrender.com/)
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-10b981?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Descargar App (.ZIP)](https://img.shields.io/badge/⬇_Descargar_Aplicación-.ZIP-10b981?style=for-the-badge)](https://github.com/jzaldumbide/repoforensic/archive/refs/heads/main.zip)
+[![Fork me on GitHub](https://img.shields.io/badge/🍴_Fork_me_on_GitHub-jzaldumbide%2Frepoforensic-f59e0b?style=for-the-badge&logo=github)](https://github.com/jzaldumbide/repoforensic/fork)
 [![Sin Dependencias Externas](https://img.shields.io/badge/Dependencias-Zero_(Stdlib)-8b5cf6?style=for-the-badge)](#arquitectura-técnica)
 
-**RepoForensics** es una plataforma web interactiva de auditoría académica y análisis forense de repositorios de GitHub. Permite determinar con precisión quirúrgica **quién copió a quién** (direccionalidad de la copia), visualizar cadenas de derivación en un grafo dirigido, comparar archivos de código lado a lado y cuantificar la **huella de uso de Inteligencia Artificial** (Claude, ChatGPT, Gemini, DeepSeek / OpenCode) a partir de los metadatos de commits y heurísticas estilísticas de prompts.
+**RepoForensics** es una plataforma web interactiva de auditoría académica y análisis forense de repositorios de GitHub. Permite determinar con precisión quirúrgica **quién copió a quién** (direccionalidad de la copia), visualizar cadenas de derivación en un grafo dirigido, comparar archivos de código lado a lado, cuantificar la **huella de uso de Inteligencia Artificial** (Claude, ChatGPT, Gemini, DeepSeek / OpenCode) y obtener un **% recomendado de amonestación orientativo** basado en la copia de un autor anterior y el arrastre del PDF del enunciado.
 
-🔗 **Acceso directo a la aplicación desplegada:**  
-👉 **[https://repoforensic.onrender.com/](https://repoforensic.onrender.com/)**
+🔗 **Enlaces Rápidos:**
+- 🌐 **Aplicación Web en Vivo (Render):** **[https://repoforensic.onrender.com/](https://repoforensic.onrender.com/)**
+- ⬇️ **Descargar Aplicación Completa (.ZIP):** **[Descargar `repoforensic-main.zip`](https://github.com/jzaldumbide/repoforensic/archive/refs/heads/main.zip)**
+- 🍴 **Hacer Fork en GitHub:** **[Fork `jzaldumbide/repoforensic`](https://github.com/jzaldumbide/repoforensic/fork)**
 
 ---
 
@@ -78,6 +81,9 @@ Usa las pestañas centrales del encabezado para cambiar de vista:
 - **`Cronología Git`:** Muestra en orden estrictamente cronológico quién empezó primero y cuánto tiempo duró su desarrollo.
 - **`Veredicto Forense`:** Tarjetas ejecutivas con los casos principales de copia detectados listos para revisión.
 - **`🤖 Uso de IA`:** Tabla detallada con el porcentaje de uso de IA, herramienta detectada (Claude, OpenCode/DeepSeek, ChatGPT/Gemini), conteo de citas a la rúbrica (`// R1..R10`), bloques JSDoc y evidencia en commits.
+- **`⚖️ % Amonestación (Sugerido)`:** Tabla orientativa (solo como recomendación para el docente) que calcula un porcentaje de penalización sugerido combinando:
+  1. **Copia / derivación respecto a un autor cronológicamente anterior** (`+15%` a `+75%` según el grado de similitud de archivos de lógica).
+  2. **Arrastre del PDF completo del enunciado** (`+10%` a `+30%` si subió el archivo `.pdf` al repositorio/historial Git o si volcó íntegramente los literales `// R1..R10` del PDF en el prompt sin desarrollo progresivo).
 
 ### 4. Agregar o Borrar Repositorios
 - **Agregar o Modificar lista (`+ Repositorios`):** Haz clic en el botón superior derecho **`+ Repositorios`**, pega las URLs de GitHub (acepta enlaces con o sin `.git`, con `/` final, ramas `/tree/nombre-rama` o subcarpetas `/tree/main/src/carpeta`) y pulsa **`Clonar y Re-Analizar Repositorios`**.
@@ -163,3 +169,4 @@ repoforensic/
 | `POST` | `/api/delete-repo` | Recibe `{"id": "owner/repo"}` y elimina ese repositorio específico del grafo actual. |
 | `POST` | `/api/clear-repos` | Borra todos los repositorios analizados y limpia la caché local (`repos_cache`). |
 | `GET` | `/api/health` | Endpoint de verificación de estado (`{"status": "ok"}`). |
+

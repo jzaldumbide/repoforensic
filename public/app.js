@@ -931,6 +931,31 @@ function selectNode(node) {
 
     <div class="info-card">
       <h3>
+        <span>⚖️ % Amonestación Recomendada</span>
+        <span class="sim-badge ${
+          (node.penalty_score || 0) >= 65
+            ? "sim-high"
+            : (node.penalty_score || 0) >= 35
+            ? "sim-med"
+            : "sim-low"
+        }">${node.penalty_score || 0}% (Sugerido)</span>
+      </h3>
+      <div style="font-size:0.74rem; color:var(--text-muted); margin-bottom:0.45rem">
+        <em>*Solo recomendación orientativa*</em> — <strong>${escapeHtml(
+          node.penalty_category || "Sin Amonestación"
+        )}</strong>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.35rem; font-size:0.74rem; margin-bottom:0.5rem">
+        <div>Por Copia Previa: <strong>+${node.plagiarism_penalty || 0}%</strong></div>
+        <div>Por Arrastre PDF/Rúbrica: <strong>+${node.pdf_penalty || 0}%</strong></div>
+      </div>
+      <ul class="reason-list" style="font-size:0.74rem">
+        ${(node.penalty_reasons || []).map((r) => `<li>${escapeHtml(r)}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>
         <span>🤖 Métrica de Uso de IA</span>
         <span class="sim-badge ${
           (node.ai_score || 0) >= 65 ? "sim-high" : (node.ai_score || 0) >= 35 ? "sim-med" : "sim-low"
@@ -1296,12 +1321,106 @@ function renderAiMetrics() {
   });
 }
 
+function renderPenaltyMetrics() {
+  if (!appData || !appData.nodes) return;
+  const summaryEl = document.getElementById("penaltySummaryCards");
+  const tableEl = document.getElementById("penaltyTableContainer");
+  if (!summaryEl || !tableEl) return;
+
+  const sorted = [...appData.nodes].sort(
+    (a, b) => (b.penalty_score || 0) - (a.penalty_score || 0) || (b.copied_similarity || 0) - (a.copied_similarity || 0)
+  );
+
+  const severe = sorted.filter((n) => (n.penalty_score || 0) >= 70);
+  const medium = sorted.filter((n) => (n.penalty_score || 0) >= 35 && (n.penalty_score || 0) < 70);
+  const clean = sorted.filter((n) => (n.penalty_score || 0) < 35);
+
+  summaryEl.innerHTML = `
+    <div class="info-card">
+      <h3><span>🚨 Sanción Severa Sugerida (70%–100%)</span><span class="sim-badge sim-high">${severe.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Repositorios con alta copia de un compañero cronológicamente anterior (≥ 68%) combinada o no con volcado del PDF del enunciado y entrega en pocos commits.
+      </p>
+    </div>
+    <div class="info-card">
+      <h3><span>⚠️ Amonestación Media Sugerida (35%–69%)</span><span class="sim-badge sim-med">${medium.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Derivación parcial de código de un autor anterior o arrastre íntegro del PDF del examen al repositorio/prompt.
+      </p>
+    </div>
+    <div class="info-card">
+      <h3><span>✅ Observación Leve / Sin Sanción (0%–34%)</span><span class="sim-badge sim-low">${clean.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Autores originales/semilla (quienes desarrollaron primero antes de que otros les copiaran) o proyectos con arquitectura propia independiente.
+      </p>
+    </div>
+  `;
+
+  let html = `
+    <table class="matrix-table" style="text-align:start">
+      <thead>
+        <tr>
+          <th style="text-align:start; padding-inline:0.75rem"># / Estudiante (Repositorio)</th>
+          <th>% Amonestación (Sugerido)</th>
+          <th>Desglose (Copia + PDF)</th>
+          <th style="text-align:start; padding-inline:0.75rem">Copió de Autor Anterior</th>
+          <th>PDF en Repo / Citas Rúbrica</th>
+          <th style="text-align:start; padding-inline:0.75rem">Justificación Orientativa</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  sorted.forEach((n, idx) => {
+    const pen = n.penalty_score || 0;
+    const badgeCls = pen >= 70 ? "sim-high" : pen >= 35 ? "sim-med" : "sim-low";
+    const pdfs = n.ai_metrics?.pdf_files || [];
+    const rub = n.ai_metrics?.rubric_refs || 0;
+    const pdfText = pdfs.length
+      ? `📄 PDF (${pdfs[0]}) + ${rub} R-citas`
+      : rub > 0
+      ? `${rub} citas // R1..R10`
+      : "—";
+    const copiedStr = n.copied_from
+      ? `${n.copied_from} (${n.copied_similarity}%)`
+      : "— (Origen / Independiente)";
+
+    html += `
+      <tr class="matrix-cell" data-pen-node="${escapeHtml(n.id)}">
+        <td style="text-align:start; padding-inline:0.75rem; font-weight:700">${idx + 1}. ${escapeHtml(
+      n.short_name
+    )}</td>
+        <td><span class="sim-badge ${badgeCls}">-${pen}%</span></td>
+        <td style="font-size:0.74rem">Copia: <strong>${n.plagiarism_penalty || 0}%</strong> | PDF: <strong>${
+      n.pdf_penalty || 0
+    }%</strong></td>
+        <td style="text-align:start; padding-inline:0.75rem; font-size:0.74rem">${escapeHtml(copiedStr)}</td>
+        <td style="font-size:0.74rem">${escapeHtml(pdfText)}</td>
+        <td style="text-align:start; padding-inline:0.75rem; font-size:0.73rem; color:var(--text-muted)">${escapeHtml(
+          (n.penalty_reasons || [])[0] || ""
+        )}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  tableEl.innerHTML = html;
+
+  tableEl.querySelectorAll("[data-pen-node]").forEach((row) => {
+    row.addEventListener("click", () => {
+      const node = appData.nodes.find((n) => n.id === row.dataset.penNode);
+      if (node) selectNode(node);
+    });
+  });
+}
+
 function renderAll() {
   renderGraph();
   renderMatrix();
   renderTimeline();
   renderReport();
   renderAiMetrics();
+  renderPenaltyMetrics();
 }
 
 window.addEventListener("resize", () => {

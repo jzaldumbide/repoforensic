@@ -1,0 +1,7 @@
+# Python & OS
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Cloned repositories cache (do not commit 23 full repos into our app repo!)
+repos_cache/

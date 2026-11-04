@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- MANDATORY: Declare support for both light and dark themes -->
+  <meta name="color-scheme" content="light dark">
+  <title>RepoForensics — Grafo de Plagio y Derivación de Código</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-header">
+      <div class="brand-group">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="6" cy="6" r="3"></circle>
+            <circle cx="18" cy="6" r="3"></circle>
+            <circle cx="12" cy="18" r="3"></circle>
+            <path d="M8.5 7.5L15.5 7.5"></path>
+            <path d="M7.5 8.5L10.8 15.5"></path>
+            <path d="M16.5 8.5L13.2 15.5"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>RepoForensics <span class="badge-pill" id="repoCountBadge">23 Repositorios</span></h1>
+          <p class="subtitle">Análisis Forense de Similitud Estructural, Cronología Git y Árbol de Derivación ("Quién copió a Quién")</p>
+        </div>
+      </div>
+
+      <nav class="view-tabs" aria-label="Vistas principales">
+        <button type="button" class="tab-btn active" data-view="graph">
+          Grafo de Copia
+        </button>
+        <button type="button" class="tab-btn" data-view="matrix">
+          Matriz de Similitud
+        </button>
+        <button type="button" class="tab-btn" data-view="timeline">
+          Cronología Git
+        </button>
+        <button type="button" class="tab-btn" data-view="report">
+          Veredicto Forense
+        </button>
+      </nav>
+
+      <div class="header-controls">
+        <button type="button" id="btnAddRepos" class="btn-secondary" title="Analizar o editar lista de repositorios">
+          + Repositorios
+        </button>
+        <button type="button" id="btnClearRepos" class="btn-danger" title="Borrar todos los repositorios analizados">
+          🗑 Borrar Repos
+        </button>
+      </div>
+    </header>
+
+    <div class="toolbar-bar" id="graphToolbar">
+      <div class="control-item">
+        <label for="modeSelect">Modo del Grafo:</label>
+        <select id="modeSelect">
+          <option value="primary">Árbol Principal (¿Quién copió a quién?)</option>
+          <option value="high">Copia / Derivación Alta (≥ 45%)</option>
+          <option value="all">Todas las Conexiones (≥ Umbral)</option>
+        </select>
+      </div>
+
+      <div class="control-item">
+        <label for="thresholdSlider">Umbral Mínimo: <strong id="thresholdVal">35%</strong></label>
+        <input type="range" id="thresholdSlider" min="25" max="75" step="1" value="35">
+      </div>
+
+      <div class="control-item">
+        <label for="layoutSelect">Disposición:</label>
+        <select id="layoutSelect">
+          <option value="chronological">Jerarquía Cronológica (Origen → Copia)</option>
+          <option value="force">Fuerzas Dirigidas (Clusters)</option>
+        </select>
+      </div>
+
+      <div class="legend-inline" aria-label="Leyenda del grafo">
+        <span class="legend-chip"><span class="dot dot-origin"></span> Semilla / Origen Temprano</span>
+        <span class="legend-chip"><span class="dot dot-derived"></span> Derivado / Copia</span>
+        <span class="legend-chip"><span class="dot dot-ai"></span> Commits con IA (Claude)</span>
+        <span class="legend-chip"><span class="dot dot-other"></span> Otro Tema / Independiente</span>
+        <span class="legend-chip"><span class="line-sample line-high"></span> Flecha: Origen → Quién Copió</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" id="btnResetZoom" class="btn-ghost">Centrar Grafo</button>
+      </div>
+    </div>
+
+    <main class="workspace-grid">
+      <!-- VISTA 1: GRAFO INTERACTIVO -->
+      <section class="canvas-panel view-section active" id="view-graph" aria-label="Grafo interactivo de repositorios">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <svg id="graphSvg" width="100%" height="100%">
+            <defs>
+              <marker id="arrow-high" viewBox="0 -5 10 10" refX="26" refY="0" markerWidth="7" markerHeight="7" orient="auto">
+                <path d="M0,-4.5L10,0L0,4.5Z" fill="#ef4444"></path>
+              </marker>
+              <marker id="arrow-med" viewBox="0 -5 10 10" refX="26" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,-4L10,0L0,4Z" fill="#f59e0b"></path>
+              </marker>
+              <marker id="arrow-same" viewBox="0 -5 10 10" refX="26" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0,-4L10,0L0,4Z" fill="#8b5cf6"></path>
+              </marker>
+            </defs>
+            <g id="graphViewport">
+              <g id="gridLayer"></g>
+              <g id="edgesLayer"></g>
+              <g id="edgeLabelsLayer"></g>
+              <g id="nodesLayer"></g>
+            </g>
+          </svg>
+
+          <div class="graph-Watermark">
+            Haz clic en cualquier <strong>flecha (arista)</strong> para ver la evidencia de copia lado a lado, o en un <strong>nodo</strong> para inspeccionar su historial Git. Arrastra los nodos libremente.
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 2: MATRIZ DE SIMILITUD -->
+      <section class="full-panel view-section" id="view-matrix" aria-label="Matriz de similitud">
+        <div class="panel-inner">
+          <h2>Matriz Cruzada de Similitud de Lógica de Negocio</h2>
+          <p class="section-desc">
+            Muestra el puntaje calibrado de similitud (excluyendo archivos de plantilla Ionic/Angular como <code>*.spec.ts</code> o <code>eslint.config.js</code>). Haz clic en cualquier celda para abrir el comparador forense entre esos dos repositorios.
+          </p>
+          <div class="matrix-scroll" id="matrixContainer"></div>
+        </div>
+      </section>
+
+      <!-- VISTA 3: CRONOLOGÍA GIT -->
+      <section class="full-panel view-section" id="view-timeline" aria-label="Cronología de commits">
+        <div class="panel-inner">
+          <h2>Línea de Tiempo Forense (Primer Commit vs. Último Commit)</h2>
+          <p class="section-desc">
+            Un repositorio solo puede copiar de otro que existía o fue desarrollado antes, salvo cuando comparten grupo de estudio o plantilla previa. Observa también la cantidad de commits (desarrollo incremental vs. subida de un solo golpe).
+          </p>
+          <div id="timelineContainer" class="timeline-list"></div>
+        </div>
+      </section>
+
+      <!-- VISTA 4: VEREDICTO FORENSE -->
+      <section class="full-panel view-section" id="view-report" aria-label="Informe forense detallado">
+        <div class="panel-inner">
+          <h2>Informe Forense: ¿Quién Copió a Quién?</h2>
+          <p class="section-desc">
+            Resumen ejecutivo agrupado por cadenas de derivación, huellas digitales compartidas en el código y hallazgos de autoría.
+          </p>
+          <div id="reportContainer" class="report-grid"></div>
+        </div>
+      </section>
+
+      <!-- PANEL LATERAL DE INSPECCIÓN (SIEMPRE VISIBLE A LA DERECHA) -->
+      <aside class="inspector-sidebar" id="inspectorSidebar" aria-label="Inspector de evidencia">
+        <div class="inspector-header">
+          <h2 id="inspectorTitle">Inspector de Evidencia</h2>
+          <span class="inspector-subtitle" id="inspectorSubtitle">Selecciona un nodo o conexión</span>
+        </div>
+        <div class="inspector-body" id="inspectorBody">
+          <!-- Populated dynamically -->
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- MODAL PARA COMPARACIÓN DE CÓDIGO LADO A LADO -->
+  <dialog id="codeModal" class="code-dialog">
+    <div class="dialog-header">
+      <div>
+        <h3 id="modalTitle">Comparación de Código</h3>
+        <p id="modalSubtitle" class="dialog-sub"></p>
+      </div>
+      <button type="button" id="btnCloseModal" class="btn-close" aria-label="Cerrar ventana">✕</button>
+    </div>
+    <div class="dialog-body" id="modalBody"></div>
+  </dialog>
+
+  <!-- MODAL PARA EDITAR / RE-ANALIZAR REPOS -->
+  <dialog id="reposModal" class="code-dialog">
+    <div class="dialog-header">
+      <div>
+        <h3>Lista de Repositorios Analizados</h3>
+        <p class="dialog-sub">Agrega o modifica URLs de GitHub para re-ejecutar el motor forense</p>
+      </div>
+      <button type="button" id="btnCloseReposModal" class="btn-close" aria-label="Cerrar ventana">✕</button>
+    </div>
+    <div class="dialog-body">
+      <textarea id="reposTextarea" rows="16" class="repos-input" placeholder="Pega aquí las URLs de GitHub (una por línea)..."></textarea>
+      <div class="dialog-footer" style="gap: 0.65rem; justify-content: space-between;">
+        <button type="button" id="btnClearInModal" class="btn-danger">🗑 Vaciar / Borrar Todos los Repos</button>
+        <button type="button" id="btnRunReanalyze" class="btn-primary">Clonar y Re-Analizar Repositorios</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
+

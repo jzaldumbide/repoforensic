@@ -621,9 +621,10 @@ function renderGraph() {
     badgeText.setAttribute("x", String(-cardW / 2 + 10));
     badgeText.setAttribute("y", String(-cardH / 2 + 15));
     badgeText.setAttribute("fill", cat.color);
-    badgeText.setAttribute("font-size", "9.5");
+    badgeText.setAttribute("font-size", "9.2");
     badgeText.setAttribute("font-weight", "700");
-    badgeText.textContent = `${cat.label} • ${node.commit_count}c`;
+    const aiTag = (node.ai_score || 0) >= 40 ? ` • 🤖${node.ai_score}%` : "";
+    badgeText.textContent = `${cat.label} • ${node.commit_count}c${aiTag}`;
 
     // Owner title
     const ownerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -929,6 +930,34 @@ function selectNode(node) {
     </div>
 
     <div class="info-card">
+      <h3>
+        <span>🤖 Métrica de Uso de IA</span>
+        <span class="sim-badge ${
+          (node.ai_score || 0) >= 65 ? "sim-high" : (node.ai_score || 0) >= 35 ? "sim-med" : "sim-low"
+        }">${node.ai_score || 0}% — ${escapeHtml(node.ai_level || "Bajo")}</span>
+      </h3>
+      <div style="font-size:0.77rem; margin-bottom:0.45rem">
+        <strong>Herramienta / Estilo Detectado:</strong>
+        <span style="color:var(--accent-color); font-weight:600">${escapeHtml(
+          (node.ai_models || []).join(", ")
+        )}</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.35rem; font-size:0.74rem; color:var(--text-muted); margin-bottom:0.5rem">
+        <div>Citas Rúbrica (<code>// R1..</code>): <strong>${node.ai_metrics?.rubric_refs ?? 0}</strong></div>
+        <div>Bloques JSDoc (<code>/** */</code>): <strong>${node.ai_metrics?.jsdoc_blocks ?? 0}</strong></div>
+        <div>Banners (<code>// ───</code>): <strong>${node.ai_metrics?.banner_comments ?? 0}</strong></div>
+        <div>Árbol ASCII README: <strong>${node.ai_metrics?.has_ascii_tree ? "Sí" : "No"}</strong></div>
+      </div>
+      ${
+        node.ai_evidences && node.ai_evidences.length
+          ? `<ul class="reason-list" style="font-size:0.74rem">${node.ai_evidences
+              .map((ev) => `<li>${escapeHtml(ev)}</li>`)
+              .join("")}</ul>`
+          : `<p style="font-size:0.74rem; color:var(--text-muted)">Sin rastros explícitos de agentes de IA en commits ni patrones marcados de prompt.</p>`
+      }
+    </div>
+
+    <div class="info-card">
       <h3>🎯 Ranking de Similitud contra este Repo (Top 12)</h3>
       <p style="font-size:0.73rem; color:var(--text-muted); margin-bottom:0.5rem">
         Haz clic en cualquier fila para inspeccionar el código lado a lado frente a <strong>${escapeHtml(node.owner)}</strong>:
@@ -1182,11 +1211,97 @@ function renderReport() {
   });
 }
 
+function renderAiMetrics() {
+  if (!appData || !appData.nodes) return;
+  const summaryEl = document.getElementById("aiSummaryCards");
+  const tableEl = document.getElementById("aiTableContainer");
+  if (!summaryEl || !tableEl) return;
+
+  const sorted = [...appData.nodes].sort((a, b) => (b.ai_score || 0) - (a.ai_score || 0));
+  const confirmed = sorted.filter((n) => (n.ai_score || 0) >= 65);
+  const probable = sorted.filter((n) => (n.ai_score || 0) >= 35 && (n.ai_score || 0) < 65);
+  const low = sorted.filter((n) => (n.ai_score || 0) < 35);
+
+  summaryEl.innerHTML = `
+    <div class="info-card">
+      <h3><span>🔥 Confirmado / Muy Alto (≥ 65%)</span><span class="sim-badge sim-high">${confirmed.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Rastros directos en el historial Git (<code>Author: Claude</code>, <code>Co-Authored-By: Claude Opus</code>, sesiones de Claude Code, o carpetas <code>.opencode/agents/</code> y <code>REGISTRO-DEEPSEEK.md</code> borradas antes de entregar) o combinación fuerte de marcadores de prompt.
+      </p>
+    </div>
+    <div class="info-card">
+      <h3><span>⚡ Probable / Asistencia Moderada (35%–64%)</span><span class="sim-badge sim-med">${probable.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Huellas estilísticas en el código: comentarios con los códigos exactos del PDF del examen (<code>// R1</code>, <code>// R3</code>, <code>// R9</code>), alta densidad de bloques JSDoc (<code>/** ... */</code>), separadores <code>// ────</code> o diagramas ASCII en el README.
+      </p>
+    </div>
+    <div class="info-card">
+      <h3><span>✍️ Baja Huella de IA (< 35%)</span><span class="sim-badge sim-low">${low.length} repos</span></h3>
+      <p style="font-size:0.76rem; color:var(--text-muted)">
+        Sin metadatos de agentes en Git y con baja presencia de plantillas documentales típicas de LLMs.
+      </p>
+    </div>
+  `;
+
+  let html = `
+    <table class="matrix-table" style="text-align:start">
+      <thead>
+        <tr>
+          <th style="text-align:start; padding-inline:0.75rem"># / Repositorio</th>
+          <th>Puntaje IA</th>
+          <th>Nivel</th>
+          <th style="text-align:start; padding-inline:0.75rem">Herramienta / Estilo Detectado</th>
+          <th>Citas Rúbrica (// R1..R10)</th>
+          <th>Bloques JSDoc</th>
+          <th>Banners (// ───)</th>
+          <th>Árbol ASCII README</th>
+          <th style="text-align:start; padding-inline:0.75rem">Evidencia Principal en Commits / Código</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  sorted.forEach((n, idx) => {
+    const sc = n.ai_score || 0;
+    const badgeCls = sc >= 65 ? "sim-high" : sc >= 35 ? "sim-med" : "sim-low";
+    const m = n.ai_metrics || {};
+    const topEv = (n.ai_evidences || [])[0] || "Sin marcadores fuertes";
+    html += `
+      <tr class="matrix-cell" data-ai-node="${escapeHtml(n.id)}">
+        <td style="text-align:start; padding-inline:0.75rem; font-weight:700">${idx + 1}. ${escapeHtml(n.short_name)}</td>
+        <td><span class="sim-badge ${badgeCls}">${sc}%</span></td>
+        <td>${escapeHtml(n.ai_level || "Bajo")}</td>
+        <td style="text-align:start; padding-inline:0.75rem; color:var(--accent-color)">${escapeHtml(
+          (n.ai_models || []).join(", ")
+        )}</td>
+        <td>${m.rubric_refs ?? 0}</td>
+        <td>${m.jsdoc_blocks ?? 0}</td>
+        <td>${m.banner_comments ?? 0}</td>
+        <td>${m.has_ascii_tree ? "✓ Sí" : "—"}</td>
+        <td style="text-align:start; padding-inline:0.75rem; font-size:0.73rem; color:var(--text-muted)">${escapeHtml(
+          topEv
+        )}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  tableEl.innerHTML = html;
+
+  tableEl.querySelectorAll("[data-ai-node]").forEach((row) => {
+    row.addEventListener("click", () => {
+      const node = appData.nodes.find((n) => n.id === row.dataset.aiNode);
+      if (node) selectNode(node);
+    });
+  });
+}
+
 function renderAll() {
   renderGraph();
   renderMatrix();
   renderTimeline();
   renderReport();
+  renderAiMetrics();
 }
 
 window.addEventListener("resize", () => {

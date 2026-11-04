@@ -41,6 +41,9 @@
         <button type="button" class="tab-btn" data-view="report">
           Veredicto Forense
         </button>
+        <button type="button" class="tab-btn" data-view="ai">
+          🤖 Uso de IA
+        </button>
       </nav>
 
       <div class="header-controls">
@@ -157,6 +160,18 @@
             Resumen ejecutivo agrupado por cadenas de derivación, huellas digitales compartidas en el código y hallazgos de autoría.
           </p>
           <div id="reportContainer" class="report-grid"></div>
+        </div>
+      </section>
+
+      <!-- VISTA 5: DETECCIÓN DE USO DE IA (CLAUDE / GEMINI / CHATGPT) -->
+      <section class="full-panel view-section" id="view-ai" aria-label="Métrica de uso de Inteligencia Artificial">
+        <div class="panel-inner">
+          <h2>🤖 Métrica de Uso de IA (Claude, ChatGPT, Gemini, DeepSeek / Agentes)</h2>
+          <p class="section-desc">
+            Analiza el historial completo de commits en Git (incluyendo <code>Co-Authored-By</code>, <code>Claude-Session</code> y archivos de agentes borrados antes de la entrega como <code>.opencode/</code>), junto con heurísticas de prompt en el código (comentarios citando códigos de la rúbrica <code>// R1..R10</code>, densidad de bloques JSDoc <code>/** */</code>, separadores decorativos <code>// ────</code> y árboles ASCII en el README).
+          </p>
+          <div id="aiSummaryCards" class="report-grid" style="margin-block-end: 1.25rem;"></div>
+          <div class="matrix-scroll" id="aiTableContainer"></div>
         </div>
       </section>
 

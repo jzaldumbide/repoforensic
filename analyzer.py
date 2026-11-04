@@ -204,6 +204,9 @@ def get_git_metadata(info: dict):
     first_ts = min(timestamps) if timestamps else None
     last_ts = max(timestamps) if timestamps else None
 
+    # Also get full commit log with bodies and stats to detect AI co-authors, trailers, and deleted agent files
+    full_log = run_git(["log", "--all", "--stat", "--format=COMMIT_START%nAuthor: %an <%ae>%nCommitter: %cn <%ce>%nSubject: %s%nBody: %b%n"])
+
     return {
         "commit_count": len(commits),
         "commits": commits,
@@ -214,6 +217,7 @@ def get_git_metadata(info: dict):
         "first_commit_date": datetime.fromtimestamp(first_ts).isoformat() if first_ts else None,
         "last_commit_ts": last_ts,
         "last_commit_date": datetime.fromtimestamp(last_ts).isoformat() if last_ts else None,
+        "full_log": full_log,
     }
 
 
@@ -321,6 +325,139 @@ def extract_repo_features(info: dict):
     }
 
 
+def analyze_ai_usage(info: dict, git_meta: dict, feats: dict) -> dict:
+    full_log = git_meta.get("full_log", "")
+    commits = git_meta.get("commits", [])
+    all_files = feats.get("all_files", {})
+    custom_lines = feats.get("custom_lines", 0)
+
+    detected_models = []
+    evidences = []
+    score = 0
+
+    # 1. Explicit Git Commit Trailers & Authors (Claude Code, Copilot, Cursor, OpenCode, DeepSeek, Gemini)
+    if re.search(r"Claude|anthropic\.com|claude\.ai", full_log, re.I):
+        detected_models.append("Claude (Anthropic)")
+        score += 75
+        for m in re.findall(r"(?:Author:\s*Claude[^\n]+|Co-Authored-By:\s*Claude[^\n]+|Claude-Session:\s*[^\n]+)", full_log, re.I):
+            evidences.append(f"Firma directa en Git: `{m.strip()}`")
+
+    if re.search(r"\.opencode|opencode\.json|deepseek|mimo-infra|REGISTRO-DEEPSEEK", full_log, re.I):
+        detected_models.append("OpenCode / DeepSeek Agents")
+        score += 75
+        evidences.append("Rastros en historial Git de agentes `.opencode/agents/` (`deepseek-codigo.md`, `HANDOFF.md`, `PLAN.md`).")
+
+    if re.search(r"gemini|google\.generativeai|idx\.dev|\.idx", full_log, re.I):
+        detected_models.append("Gemini / IDX")
+        score += 70
+        evidences.append("Rastros en historial Git de Google Gemini / Project IDX.")
+
+    if re.search(r"chatgpt|openai|copilot|cursor", full_log, re.I):
+        detected_models.append("ChatGPT / Copilot")
+        score += 70
+        evidences.append("Mención en historial Git a ChatGPT / OpenAI / GitHub Copilot.")
+
+    # 2. Code Style & Prompt Heuristics across custom files and README
+    banner_comments = 0
+    jsdoc_blocks = 0
+    rubric_refs = 0
+    code_emojis = 0
+    has_ascii_tree = False
+
+    work_path = Path(info.get("work_path", "")) if info.get("work_path") else None
+    if work_path and work_path.exists():
+        for rname in ["README.md", "municipio/README.md", "urbaninspect/README.md"]:
+            rp = work_path / rname
+            if rp.exists():
+                rtxt = rp.read_text(encoding="utf-8", errors="ignore")
+                if re.search(r"[├└]──", rtxt):
+                    has_ascii_tree = True
+
+    for rel_p, fobj in all_files.items():
+        if fobj.get("is_boilerplate"):
+            continue
+        raw = fobj.get("raw", "")
+        banner_comments += len(re.findall(r"//\s*[-═─=]{4,}", raw))
+        jsdoc_blocks += len(re.findall(r"/\*\*[\s\S]*?\*/", raw))
+        rubric_refs += len(re.findall(r"//\s*R(?:[1-9]|10)\b|/\*\*\s*R(?:[1-9]|10)\b", raw))
+        if fobj.get("ext") in {".ts", ".html"}:
+            code_emojis += len(re.findall(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]", raw))
+
+    # Evaluate heuristic signals
+    if rubric_refs >= 4:
+        score += 22
+        evidences.append(f"{rubric_refs} comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.")
+    elif rubric_refs >= 1:
+        score += 10
+        evidences.append(f"{rubric_refs} referencia(s) en comentarios a requisitos de la rúbrica (`// R1..R10`).")
+
+    if jsdoc_blocks >= 15:
+        score += 20
+        evidences.append(f"Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: {jsdoc_blocks} bloques), típico de generación por LLM (Claude / GPT-4o).")
+    elif jsdoc_blocks >= 5:
+        score += 10
+        evidences.append(f"Documentación estructurada JSDoc en funciones y servicios ({jsdoc_blocks} bloques).")
+
+    if banner_comments >= 3:
+        score += 15
+        evidences.append(f"Uso de separadores decorativos de sección en código (`// ────` o `// ====`: {banner_comments} bloques), frecuente en respuestas de ChatGPT/Claude.")
+
+    if code_emojis >= 5:
+        score += 12
+        evidences.append(f"Uso intensivo de emojis integrados en literales/plantillas de código ({code_emojis} ocurrencias).")
+
+    if has_ascii_tree:
+        score += 12
+        evidences.append("El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA.")
+
+    # 3. Git Commit Velocity & Conventional Commits
+    conv_commits = sum(
+        1 for c in commits
+        if re.match(r"^(feat|fix|chore|refactor|docs|style|ci|clean)(\([^)]+\))?:", c.get("subject", ""), re.I)
+    )
+    if conv_commits >= 2:
+        score += 10
+        evidences.append(f"{conv_commits} commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`).")
+
+    if len(commits) <= 3 and custom_lines >= 1200:
+        score += 15
+        evidences.append(f"Volcado masivo: {custom_lines} líneas de lógica propia subidas en solo {len(commits)} commit(s).")
+
+    final_score = min(99, score)
+
+    if not detected_models:
+        if final_score >= 55:
+            detected_models.append("Alta Probabilidad (Estilo Claude / ChatGPT)")
+        elif final_score >= 30:
+            detected_models.append("Asistencia Moderada (ChatGPT / Claude / Gemini)")
+        else:
+            detected_models.append("Baja huella de IA / Manual")
+
+    if final_score >= 70:
+        level = "Confirmado / Muy Alto"
+    elif final_score >= 45:
+        level = "Probable (Huellas de Prompt)"
+    elif final_score >= 25:
+        level = "Moderado / Parcial"
+    else:
+        level = "Bajo / No Detectado"
+
+    return {
+        "ai_score": final_score,
+        "ai_level": level,
+        "ai_models": detected_models,
+        "ai_evidences": evidences,
+        "metrics": {
+            "rubric_refs": rubric_refs,
+            "jsdoc_blocks": jsdoc_blocks,
+            "banner_comments": banner_comments,
+            "code_emojis": code_emojis,
+            "has_ascii_tree": has_ascii_tree,
+            "conventional_commits": conv_commits
+        }
+    }
+
+
 def compare_all_repos(repos_dir: Path, raw_urls: list = None):
     if raw_urls is None:
         raw_urls = REPOS_RAW
@@ -358,7 +495,11 @@ def compare_all_repos(repos_dir: Path, raw_urls: list = None):
                         pkg_name = m.group(1)
                         break
 
-        ai_assisted = any("claude" in a.lower() or "anthropic" in a.lower() or "copilot" in a.lower() for a in git_meta.get("authors", []))
+        ai_info = analyze_ai_usage(info, git_meta, feats)
+        ai_assisted = ai_info["ai_score"] >= 70 or any(
+            "claude" in a.lower() or "anthropic" in a.lower() or "copilot" in a.lower()
+            for a in git_meta.get("authors", [])
+        )
 
         nodes.append({
             "id": rid,
@@ -378,6 +519,11 @@ def compare_all_repos(repos_dir: Path, raw_urls: list = None):
             "authors": git_meta.get("authors", []),
             "emails": git_meta.get("emails", []),
             "ai_assisted": ai_assisted,
+            "ai_score": ai_info["ai_score"],
+            "ai_level": ai_info["ai_level"],
+            "ai_models": ai_info["ai_models"],
+            "ai_evidences": ai_info["ai_evidences"],
+            "ai_metrics": ai_info["metrics"],
             "first_commit_ts": git_meta.get("first_commit_ts"),
             "first_commit_date": git_meta.get("first_commit_date"),
             "last_commit_ts": git_meta.get("last_commit_ts"),

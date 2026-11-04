@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T21:08:12.088667",
+  "generated_at": "2026-11-03T21:37:25.426619",
   "nodes": [
     {
       "id": "JustinPaladines/Prueba_Urban-Inspect",
@@ -24,6 +24,20 @@
         "justin.paladines@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 0,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 1,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793154940,
       "first_commit_date": "2026-10-27T21:35:40",
       "last_commit_ts": 1793203709,
@@ -159,6 +173,23 @@
         "ariel.arias01@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 25,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Uso de separadores decorativos de sección en código (`// ────` o `// ====`: 10 bloques), frecuente en respuestas de ChatGPT/Claude.",
+        "3 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 10,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 3
+      },
       "first_commit_ts": 1793130148,
       "first_commit_date": "2026-10-27T14:42:28",
       "last_commit_ts": 1793162027,
@@ -312,6 +343,22 @@
         "suarezalex833@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 22,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "12 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 12,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793168750,
       "first_commit_date": "2026-10-28T01:25:50",
       "last_commit_ts": 1793169423,
@@ -473,6 +520,23 @@
         "amymishell6@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 24,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Uso intensivo de emojis integrados en literales/plantillas de código (8 ocurrencias).",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 8,
+        "has_ascii_tree": true,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793158729,
       "first_commit_date": "2026-10-27T22:38:49",
       "last_commit_ts": 1793207450,
@@ -645,6 +709,23 @@
         "you@example.com"
       ],
       "ai_assisted": false,
+      "ai_score": 37,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Asistencia Moderada (ChatGPT / Claude / Gemini)"
+      ],
+      "ai_evidences": [
+        "4 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "Volcado masivo: 2510 líneas de lógica propia subidas en solo 2 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 4,
+        "jsdoc_blocks": 2,
+        "banner_comments": 0,
+        "code_emojis": 1,
+        "has_ascii_tree": false,
+        "conventional_commits": 1
+      },
       "first_commit_ts": 1793154421,
       "first_commit_date": "2026-10-27T21:27:01",
       "last_commit_ts": 1793208192,
@@ -779,6 +860,23 @@
         "alex.barba@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 32,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Asistencia Moderada (ChatGPT / Claude / Gemini)"
+      ],
+      "ai_evidences": [
+        "20 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "15 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 20,
+        "jsdoc_blocks": 3,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 15
+      },
       "first_commit_ts": 1793151947,
       "first_commit_date": "2026-10-27T20:45:47",
       "last_commit_ts": 1793212253,
@@ -1025,6 +1123,20 @@
         "168014672+nw08@users.noreply.github.com"
       ],
       "ai_assisted": false,
+      "ai_score": 0,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 2,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793201242,
       "first_commit_date": "2026-10-28T10:27:22",
       "last_commit_ts": 1793216061,
@@ -1275,6 +1387,22 @@
         "gabrieltoaquiza.saenz@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 22,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "22 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 22,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793218173,
       "first_commit_date": "2026-10-28T15:09:33",
       "last_commit_ts": 1793218173,
@@ -1372,7 +1500,26 @@
         "163605505+jimsul16@users.noreply.github.com",
         "jimmito636@gmail.com"
       ],
-      "ai_assisted": false,
+      "ai_assisted": true,
+      "ai_score": 99,
+      "ai_level": "Confirmado / Muy Alto",
+      "ai_models": [
+        "OpenCode / DeepSeek Agents"
+      ],
+      "ai_evidences": [
+        "Rastros en historial Git de agentes `.opencode/agents/` (`deepseek-codigo.md`, `HANDOFF.md`, `PLAN.md`).",
+        "Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: 46 bloques), típico de generación por LLM (Claude / GPT-4o).",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA.",
+        "11 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 46,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": true,
+        "conventional_commits": 11
+      },
       "first_commit_ts": 1792700160,
       "first_commit_date": "2026-10-22T15:16:00",
       "last_commit_ts": 1793216608,
@@ -1623,6 +1770,23 @@
         "andreschico@live.com"
       ],
       "ai_assisted": false,
+      "ai_score": 22,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Documentación estructurada JSDoc en funciones y servicios (8 bloques).",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 8,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": true,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793217673,
       "first_commit_date": "2026-10-28T15:01:13",
       "last_commit_ts": 1793218380,
@@ -1715,6 +1879,23 @@
         "daniel.diaz01@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 37,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Asistencia Moderada (ChatGPT / Claude / Gemini)"
+      ],
+      "ai_evidences": [
+        "16 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "Volcado masivo: 3055 líneas de lógica propia subidas en solo 2 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 16,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 2,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793227656,
       "first_commit_date": "2026-10-28T17:47:36",
       "last_commit_ts": 1793295985,
@@ -1852,6 +2033,23 @@
         "dillanobandos@hotmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 27,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Uso intensivo de emojis integrados en literales/plantillas de código (17 ocurrencias).",
+        "Volcado masivo: 1479 líneas de lógica propia subidas en solo 3 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 1,
+        "banner_comments": 0,
+        "code_emojis": 17,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793216749,
       "first_commit_date": "2026-10-28T14:45:49",
       "last_commit_ts": 1793325116,
@@ -2011,6 +2209,24 @@
         "gabrieltoaquiza.saenz@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 42,
+      "ai_level": "Moderado / Parcial",
+      "ai_models": [
+        "Asistencia Moderada (ChatGPT / Claude / Gemini)"
+      ],
+      "ai_evidences": [
+        "1 referencia(s) en comentarios a requisitos de la rúbrica (`// R1..R10`).",
+        "Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: 81 bloques), típico de generación por LLM (Claude / GPT-4o).",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 1,
+        "jsdoc_blocks": 81,
+        "banner_comments": 0,
+        "code_emojis": 1,
+        "has_ascii_tree": true,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793244686,
       "first_commit_date": "2026-10-28T22:31:26",
       "last_commit_ts": 1793316933,
@@ -2186,6 +2402,29 @@
         "noreply@anthropic.com"
       ],
       "ai_assisted": true,
+      "ai_score": 99,
+      "ai_level": "Confirmado / Muy Alto",
+      "ai_models": [
+        "Claude (Anthropic)"
+      ],
+      "ai_evidences": [
+        "Firma directa en Git: `Author: Claude <noreply@anthropic.com>`",
+        "Firma directa en Git: `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`",
+        "Firma directa en Git: `Claude-Session: https://claude.ai/code/session_01WZSsBooPXcxy1bYJoFgxHs`",
+        "11 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: 22 bloques), típico de generación por LLM (Claude / GPT-4o).",
+        "Uso de separadores decorativos de sección en código (`// ────` o `// ====`: 5 bloques), frecuente en respuestas de ChatGPT/Claude.",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA.",
+        "Volcado masivo: 1637 líneas de lógica propia subidas en solo 3 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 11,
+        "jsdoc_blocks": 22,
+        "banner_comments": 5,
+        "code_emojis": 0,
+        "has_ascii_tree": true,
+        "conventional_commits": 1
+      },
       "first_commit_ts": 1793288808,
       "first_commit_date": "2026-10-29T10:46:48",
       "last_commit_ts": 1793301459,
@@ -2331,6 +2570,22 @@
         "michael.vargas@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 10,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "8 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 8
+      },
       "first_commit_ts": 1793242298,
       "first_commit_date": "2026-10-28T21:51:38",
       "last_commit_ts": 1793389852,
@@ -2556,6 +2811,20 @@
         "emilia.tana.p@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 0,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 1,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793071629,
       "first_commit_date": "2026-10-26T22:27:09",
       "last_commit_ts": 1793753818,
@@ -2799,6 +3068,22 @@
         "fredderick.chulde@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 12,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": true,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793085441,
       "first_commit_date": "2026-10-27T02:17:21",
       "last_commit_ts": 1793229987,
@@ -3073,6 +3358,22 @@
         "josue.patino@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 15,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Volcado masivo: 2593 líneas de lógica propia subidas en solo 2 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793148067,
       "first_commit_date": "2026-10-27T19:41:07",
       "last_commit_ts": 1793159277,
@@ -3212,6 +3513,22 @@
         "eduardo.ganchala@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 10,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "16 commits siguen formato estricto Conventional Commits (`feat:`, `fix:`, `refactor:`)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 16
+      },
       "first_commit_ts": 1793122695,
       "first_commit_date": "2026-10-27T12:38:15",
       "last_commit_ts": 1793756984,
@@ -3470,6 +3787,22 @@
         "josselynuni@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 15,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [
+        "Volcado masivo: 2755 líneas de lógica propia subidas en solo 3 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793151003,
       "first_commit_date": "2026-10-27T20:30:03",
       "last_commit_ts": 1793202523,
@@ -3589,6 +3922,24 @@
         "daniel.diaz01@epn.edu.ec"
       ],
       "ai_assisted": false,
+      "ai_score": 57,
+      "ai_level": "Probable (Huellas de Prompt)",
+      "ai_models": [
+        "Alta Probabilidad (Estilo Claude / ChatGPT)"
+      ],
+      "ai_evidences": [
+        "4 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "Alta densidad de bloques de documentación formal JSDoc (`/** ... */`: 30 bloques), típico de generación por LLM (Claude / GPT-4o).",
+        "Volcado masivo: 2917 líneas de lógica propia subidas en solo 2 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 4,
+        "jsdoc_blocks": 30,
+        "banner_comments": 0,
+        "code_emojis": 0,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793208253,
       "first_commit_date": "2026-10-28T12:24:13",
       "last_commit_ts": 1793209130,
@@ -3710,6 +4061,20 @@
         "mendara2009@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 0,
+      "ai_level": "Bajo / No Detectado",
+      "ai_models": [
+        "Baja huella de IA / Manual"
+      ],
+      "ai_evidences": [],
+      "ai_metrics": {
+        "rubric_refs": 0,
+        "jsdoc_blocks": 0,
+        "banner_comments": 0,
+        "code_emojis": 2,
+        "has_ascii_tree": false,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793249057,
       "first_commit_date": "2026-10-28T23:44:17",
       "last_commit_ts": 1793301586,
@@ -3892,6 +4257,25 @@
         "aribeth1410@gmail.com"
       ],
       "ai_assisted": false,
+      "ai_score": 64,
+      "ai_level": "Probable (Huellas de Prompt)",
+      "ai_models": [
+        "Alta Probabilidad (Estilo Claude / ChatGPT)"
+      ],
+      "ai_evidences": [
+        "4 comentarios citando explícitamente los códigos de la rúbrica (`// R1`, `// R3`, `// R9`...), patrón clásico de pasar el PDF del examen al prompt de ChatGPT/Claude.",
+        "Uso de separadores decorativos de sección en código (`// ────` o `// ====`: 4 bloques), frecuente en respuestas de ChatGPT/Claude.",
+        "El archivo `README.md` incluye diagramas de árbol de directorios ASCII (`├──`, `└──`) generados por IA.",
+        "Volcado masivo: 2437 líneas de lógica propia subidas en solo 3 commit(s)."
+      ],
+      "ai_metrics": {
+        "rubric_refs": 4,
+        "jsdoc_blocks": 0,
+        "banner_comments": 4,
+        "code_emojis": 0,
+        "has_ascii_tree": true,
+        "conventional_commits": 0
+      },
       "first_commit_ts": 1793182341,
       "first_commit_date": "2026-10-28T05:12:21",
       "last_commit_ts": 1793235376,

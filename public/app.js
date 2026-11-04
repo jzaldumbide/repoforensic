@@ -1,7 +1,8 @@
 let appData = null;
-let currentMode = "primary"; // "primary" | "high" | "all"
+let currentMode = "primary"; // "primary" | "pivot" | "high" | "all"
 let currentThreshold = 35;
 let currentLayout = "chronological"; // "chronological" | "force"
+let currentPivotId = "";
 let selectedNodeId = null;
 let selectedEdgeId = null;
 
@@ -62,13 +63,24 @@ function setupTabsAndControls() {
     });
   });
 
+  const pivotSelect = document.getElementById("pivotSelect");
   const modeSelect = document.getElementById("modeSelect");
   const thresholdSlider = document.getElementById("thresholdSlider");
   const thresholdVal = document.getElementById("thresholdVal");
   const layoutSelect = document.getElementById("layoutSelect");
 
+  if (pivotSelect) {
+    pivotSelect.addEventListener("change", (e) => {
+      setPivotRepo(e.target.value);
+    });
+  }
+
   modeSelect.addEventListener("change", (e) => {
     currentMode = e.target.value;
+    if (currentMode === "pivot" && !currentPivotId && appData?.nodes?.length) {
+      currentPivotId = appData.nodes[0].id;
+      if (pivotSelect) pivotSelect.value = currentPivotId;
+    }
     if (currentMode === "high" && currentThreshold < 45) {
       currentThreshold = 45;
       thresholdSlider.value = "45";
@@ -78,6 +90,7 @@ function setupTabsAndControls() {
       thresholdSlider.value = "35";
       thresholdVal.textContent = "35%";
     }
+    computeLayout();
     renderGraph();
   });
 
@@ -181,12 +194,66 @@ async function handleDeleteSingleRepo(repoId) {
   }
 }
 
+function setPivotRepo(repoId) {
+  currentPivotId = repoId || "";
+  const pivotSelect = document.getElementById("pivotSelect");
+  const modeSelect = document.getElementById("modeSelect");
+  const thresholdSlider = document.getElementById("thresholdSlider");
+  const thresholdVal = document.getElementById("thresholdVal");
+
+  if (pivotSelect && pivotSelect.value !== currentPivotId) {
+    pivotSelect.value = currentPivotId;
+  }
+
+  if (currentPivotId) {
+    currentMode = "pivot";
+    if (modeSelect) modeSelect.value = "pivot";
+    // Lower threshold slightly in pivot mode so the user can see all meaningful links to the pivot
+    if (currentThreshold > 28) {
+      currentThreshold = 28;
+      if (thresholdSlider) thresholdSlider.value = "28";
+      if (thresholdVal) thresholdVal.textContent = "28%";
+    }
+    computeLayout();
+    const pivotNode = appData?.nodes?.find((n) => n.id === currentPivotId);
+    if (pivotNode) {
+      selectNode(pivotNode);
+    } else {
+      renderGraph();
+    }
+  } else {
+    currentMode = "primary";
+    if (modeSelect) modeSelect.value = "primary";
+    currentThreshold = 35;
+    if (thresholdSlider) thresholdSlider.value = "35";
+    if (thresholdVal) thresholdVal.textContent = "35%";
+    computeLayout();
+    renderGraph();
+  }
+}
+
 function populateReposModal() {
   if (!appData || !appData.nodes) return;
   const badge = document.getElementById("repoCountBadge");
   if (badge) badge.textContent = `${appData.nodes.length} Repositorios`;
   const textarea = document.getElementById("reposTextarea");
   textarea.value = appData.nodes.map((n) => n.url).join("\n");
+
+  const pivotSelect = document.getElementById("pivotSelect");
+  if (pivotSelect) {
+    const prev = currentPivotId;
+    const sorted = [...appData.nodes].sort((a, b) => a.short_name.localeCompare(b.short_name));
+    pivotSelect.innerHTML =
+      `<option value="">— Ninguno (Vista Global) —</option>` +
+      sorted
+        .map(
+          (n) =>
+            `<option value="${escapeHtml(n.id)}" ${n.id === prev ? "selected" : ""}>🎯 ${escapeHtml(
+              n.short_name
+            )}</option>`
+        )
+        .join("");
+  }
 }
 
 async function handleReanalyze() {
@@ -222,7 +289,17 @@ async function handleReanalyze() {
 }
 
 function getFilteredEdges() {
-  if (!appData || !appData.edges) return [];
+  if (!appData) return [];
+  if (currentMode === "pivot" && currentPivotId) {
+    // Use all_comparisons so every repo can be compared against the pivot!
+    const sourceList = appData.all_comparisons || appData.edges || [];
+    return sourceList.filter(
+      (e) =>
+        (e.source === currentPivotId || e.target === currentPivotId) &&
+        (e.similarity >= currentThreshold || e.same_owner)
+    );
+  }
+  if (!appData.edges) return [];
   return appData.edges.filter((e) => {
     if (e.similarity < currentThreshold && !e.same_owner) return false;
     if (currentMode === "primary") {
@@ -243,6 +320,45 @@ function computeLayout() {
   const height = Math.max(rect.height || 680, 620);
 
   const nodes = appData.nodes;
+
+  if (currentMode === "pivot" && currentPivotId) {
+    // Radial / Star layout centered on the chosen Pivot Repository
+    const centerX = width / 2;
+    const centerY = height / 2;
+    nodePositions.set(currentPivotId, { x: centerX, y: centerY });
+
+    // Find similarity of each other node against the pivot
+    const compMap = new Map();
+    (appData.all_comparisons || []).forEach((c) => {
+      if (c.source === currentPivotId) compMap.set(c.target, c.similarity);
+      else if (c.target === currentPivotId) compMap.set(c.source, c.similarity);
+    });
+
+    const others = nodes
+      .filter((n) => n.id !== currentPivotId)
+      .sort((a, b) => (compMap.get(b.id) || 0) - (compMap.get(a.id) || 0));
+
+    // Inner ring: Top most similar repos (up to 8); Outer ring: remaining repos
+    const innerRing = others.slice(0, 8);
+    const outerRing = others.slice(8);
+
+    innerRing.forEach((n, idx) => {
+      const angle = (2 * Math.PI * idx) / Math.max(innerRing.length, 1) - Math.PI / 2;
+      nodePositions.set(n.id, {
+        x: centerX + Math.cos(angle) * 235,
+        y: centerY + Math.sin(angle) * 195,
+      });
+    });
+
+    outerRing.forEach((n, idx) => {
+      const angle = (2 * Math.PI * idx) / Math.max(outerRing.length, 1) - Math.PI / 2 + 0.2;
+      nodePositions.set(n.id, {
+        x: centerX + Math.cos(angle) * 430,
+        y: centerY + Math.sin(angle) * 325,
+      });
+    });
+    return;
+  }
 
   if (currentLayout === "chronological") {
     // Dynamically assign columns by topological depth in primary copy graph + timestamp
@@ -345,6 +461,9 @@ function computeLayout() {
 }
 
 function getNodeCategory(node) {
+  if (currentPivotId && node.id === currentPivotId) {
+    return { color: "#f59e0b", bg: "#451a03", label: "🎯 REPO PIVOTE" };
+  }
   if (node.topic !== "UrbanInspect (Incidencias)") {
     return { color: "#64748b", bg: "#1e293b", label: "Otro Proyecto" };
   }
@@ -699,6 +818,36 @@ function selectNode(node) {
   const incoming = (appData.edges || []).filter((e) => e.target === node.id);
   const outgoing = (appData.edges || []).filter((e) => e.source === node.id);
 
+  // Full ranking of all other repos compared to this node (acting as Pivot reference)
+  const allAgainstNode = (appData.all_comparisons || [])
+    .filter((c) => c.source === node.id || c.target === node.id)
+    .sort((a, b) => b.similarity - a.similarity);
+
+  const pivotRankingHtml = allAgainstNode
+    .slice(0, 12)
+    .map((c) => {
+      const otherId = c.source === node.id ? c.target : c.source;
+      const otherIsLater = c.source === node.id;
+      const dirBadge = otherIsLater
+        ? `<span style="color:#f87171; font-size:0.7rem">➡ Posterior (+${c.diff_hours}h)</span>`
+        : `<span style="color:#10b981; font-size:0.7rem">⬅ Anterior (-${c.diff_hours}h)</span>`;
+      return `
+        <div class="file-match-item" data-comp-other="${escapeHtml(otherId)}">
+          <div class="file-match-top">
+            <span>${escapeHtml(otherId)}</span>
+            <span class="sim-badge ${c.similarity >= 48 ? "sim-high" : c.similarity >= 34 ? "sim-med" : "sim-low"}">${
+        c.similarity
+      }%</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.71rem; color:var(--text-muted)">
+            ${dirBadge}
+            <span>${c.matched_custom_files_count} arch. lógicos (Top: ${c.top_file_sim}%)</span>
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
   const inHtml = incoming
     .map(
       (e) => `
@@ -739,12 +888,17 @@ function selectNode(node) {
     )
     .join("");
 
+  const isCurrentPivot = currentPivotId === node.id;
+
   bodyEl.innerHTML = `
     <div class="info-card">
       <h3>
         <span>Resumen del Repositorio</span>
-        <div style="display:flex; align-items:center; gap:0.55rem">
-          <a href="${escapeHtml(node.url)}" target="_blank" rel="noopener" style="color:var(--accent-color); font-size:0.76rem">Abrir GitHub ↗</a>
+        <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap">
+          <button type="button" class="${isCurrentPivot ? "btn-secondary" : "btn-primary"}" id="btnSetPivotNode" style="padding:0.2rem 0.55rem; font-size:0.72rem">
+            ${isCurrentPivot ? "✕ Quitar Pivot" : "🎯 Fijar como Pivot"}
+          </button>
+          <a href="${escapeHtml(node.url)}" target="_blank" rel="noopener" style="color:var(--accent-color); font-size:0.76rem">GitHub ↗</a>
           <button type="button" class="btn-danger" id="btnDeleteThisNode" style="padding:0.2rem 0.5rem; font-size:0.72rem">🗑 Quitar</button>
         </div>
       </h3>
@@ -764,6 +918,14 @@ function selectNode(node) {
             )}</code></div>`
           : ""
       }
+    </div>
+
+    <div class="info-card">
+      <h3>🎯 Ranking de Similitud contra este Repo (Top 12)</h3>
+      <p style="font-size:0.73rem; color:var(--text-muted); margin-bottom:0.5rem">
+        Haz clic en cualquier fila para inspeccionar el código lado a lado frente a <strong>${escapeHtml(node.owner)}</strong>:
+      </p>
+      ${pivotRankingHtml}
     </div>
 
     <div class="info-card">
@@ -789,10 +951,38 @@ function selectNode(node) {
     </div>
   `;
 
+  const btnPivot = bodyEl.querySelector("#btnSetPivotNode");
+  if (btnPivot) {
+    btnPivot.addEventListener("click", () => {
+      if (currentPivotId === node.id) {
+        setPivotRepo("");
+      } else {
+        setPivotRepo(node.id);
+      }
+    });
+  }
+
   const btnDel = bodyEl.querySelector("#btnDeleteThisNode");
   if (btnDel) {
     btnDel.addEventListener("click", () => handleDeleteSingleRepo(node.id));
   }
+
+  bodyEl.querySelectorAll("[data-comp-other]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const otherId = el.dataset.compOther;
+      const comp = (appData.all_comparisons || []).find(
+        (c) =>
+          (c.source === node.id && c.target === otherId) ||
+          (c.target === node.id && c.source === otherId)
+      );
+      if (comp) {
+        selectEdge(comp);
+        if (comp.custom_matches && comp.custom_matches.length > 0) {
+          openCodeDiffModal(comp, comp.custom_matches[0]);
+        }
+      }
+    });
+  });
 
   bodyEl.querySelectorAll("[data-edge-id]").forEach((el) => {
     el.addEventListener("click", () => {

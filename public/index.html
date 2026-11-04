@@ -55,9 +55,17 @@
 
     <div class="toolbar-bar" id="graphToolbar">
       <div class="control-item">
+        <label for="pivotSelect">🎯 Repo Pivote:</label>
+        <select id="pivotSelect">
+          <option value="">— Ninguno (Vista Global) —</option>
+        </select>
+      </div>
+
+      <div class="control-item">
         <label for="modeSelect">Modo del Grafo:</label>
         <select id="modeSelect">
           <option value="primary">Árbol Principal (¿Quién copió a quién?)</option>
+          <option value="pivot">Centrado en el Pivot (Todos vs. Pivot)</option>
           <option value="high">Copia / Derivación Alta (≥ 45%)</option>
           <option value="all">Todas las Conexiones (≥ Umbral)</option>
         </select>

@@ -86,11 +86,34 @@ SIG_PATTERNS = {
 
 
 def parse_github_url(raw_url: str):
-    url = raw_url.strip().strip('"').strip("'")
-    m = re.match(r"https?://github\.com/([^/]+)/([^/]+?)(?:\.git)?(?:/tree/([^/]+)(?:/(.*))?)?$", url)
+    # Clean invisible unicode characters, quotes, bullets, trailing slashes, and query/hash fragments
+    s = re.sub(r"[\u200b\u200c\u200d\ufeff\xa0]", " ", raw_url).strip()
+    # Extract the first github.com URL or owner/repo pattern if line has numbering or text around it
+    url_match = re.search(r"(https?://(?:www\.)?github\.com/[^\s\"'<>]+|(?:www\.)?github\.com/[^\s\"'<>]+)", s, re.I)
+    if url_match:
+        url = url_match.group(1)
+        if not url.lower().startswith("http"):
+            url = "https://" + url
+    else:
+        url = s.strip("\"' \t\r\n,;•-*")
+        if re.match(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", url):
+            url = f"https://github.com/{url}"
+
+    # Strip query strings (?tab=...), fragments (#readme), and trailing slashes
+    url = re.split(r"[?#]", url)[0].rstrip("/")
+
+    m = re.match(
+        r"^https?://(?:www\.)?github\.com/([^/]+)/([^/]+?)(?:\.git)?(?:/(?:tree|blob)/([^/]+)(?:/(.*))?|/(?:commits?|pulls?|issues|actions|releases)(?:/.*)?)?$",
+        url,
+        re.I,
+    )
     if not m:
         raise ValueError(f"Invalid GitHub URL: {raw_url}")
     owner, repo, branch, subpath = m.groups()
+    if repo.lower().endswith(".git"):
+        repo = repo[:-4]
+    if subpath:
+        subpath = subpath.strip("/")
     clone_url = f"https://github.com/{owner}/{repo}.git"
     repo_id = f"{owner}/{repo}"
     if subpath:
@@ -301,7 +324,18 @@ def extract_repo_features(info: dict):
 def compare_all_repos(repos_dir: Path, raw_urls: list = None):
     if raw_urls is None:
         raw_urls = REPOS_RAW
-    parsed = [parse_github_url(u) for u in raw_urls]
+    parsed = []
+    seen_ids = set()
+    for u in raw_urls:
+        if not str(u).strip():
+            continue
+        try:
+            info = parse_github_url(str(u))
+            if info["id"] not in seen_ids:
+                seen_ids.add(info["id"])
+                parsed.append(info)
+        except ValueError as e:
+            print(f"Skipping invalid URL '{u}': {e}")
     cloned = clone_or_update_repos(repos_dir, parsed)
 
     nodes = []

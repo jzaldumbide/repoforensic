@@ -259,11 +259,15 @@ function populateReposModal() {
 async function handleReanalyze() {
   const btn = document.getElementById("btnRunReanalyze");
   const textarea = document.getElementById("reposTextarea");
+  // Split by newlines, commas, or spaces so multiple URLs pasted on the same line work seamlessly
   const urls = textarea.value
-    .split("\n")
+    .split(/[\r\n,\s]+/)
     .map((u) => u.trim())
-    .filter(Boolean);
-  if (!urls.length) return;
+    .filter((u) => u.includes("github.com") || /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(u));
+  if (!urls.length) {
+    alert("Por favor ingresa al menos una URL válida de GitHub.");
+    return;
+  }
 
   btn.disabled = true;
   btn.textContent = "Analizando repositorios...";
@@ -274,8 +278,12 @@ async function handleReanalyze() {
       body: JSON.stringify({ urls }),
     });
     const data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error || `HTTP ${res.status}`);
+    }
     if (data.nodes) {
       appData = data;
+      populateReposModal();
       computeLayout();
       renderAll();
       document.getElementById("reposModal").close();
